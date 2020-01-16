@@ -1,0 +1,38 @@
+GIT-----
+
+git config --global user.name "Jerry Mouse"
+git config --global user.email "jerry@tutorialspoint.
+
+go to the repository
+git init
+git add .
+git config --global user.name "Jerry Mouse"
+git config --global user.email "jerry@tutorialspoint.
+git commit
+git log
+
+git remote add origin git@github.com:vikzkr/AmgularCountries.git
+git push origin master
+
+
+
+to clone
+
+ git clone git@github.com:vikzkr/AmgularCountries.git
+
+
+
+check for ssh key ls -al ~/.ssh
+
+
+for github setting purpose
+-----------------[[[[[[Generating new ssh--
+$ ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+SHA256:piLfmAhlwoTGPNP8IQuchNvEitxdqbpp+CPUbFgiHPo
+
+to add ssh key to ssh agent
+ eval $(ssh-agent -s)
+ ssh-add ~/.ssh/id_rsa
+ 
+ 
+ clip < ~/.ssh/id_rsa.pub to copy key----------------------------]]]]]]]]]]]
