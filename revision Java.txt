@@ -1,0 +1,239 @@
+3/1/2020
+
+Before starting anything just make sure to go through Dispascter servlet,view resolver.
+Learn how to connect to database not h2. JPA related.
+
+
+
+Spring getting bean
+	{
+	Resource r=new ClassPathResource("applicationContext.xml");  
+        BeanFactory factory=new XmlBeanFactory(r);  
+          
+        Employee s=(Employee)factory.getBean("e");  
+        s.show();
+
+
+
+		 ApplicationContext context=new ClassPathXmlApplicationContext("applicationContext.xml");  
+   		 A a=context.getBean("a",A.class);  
+	}
+
+
+setter injection 
+		{
+ 
+		<bean id="obj" class="com.javatpoint.Employee">  
+		<property name="id">  
+		<value>20</value>  
+		</property>  
+		<property name="name">  
+		<value>Arun</value>  
+		</property>  
+		<property name="city">  
+		<value>ghaziabad</value>  
+		</property> 
+		}
+
+Constructor injection
+		{
+		<bean id="e" class="com.javatpoint.Employee">  
+		<constructor-arg value="10" type="int"></constructor-arg>  
+		</bean>  
+		}
+
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-test</artifactId>
+    <version>2.5</version>
+    <scope>test</scope>
+</dependency>
+
+/user/save?email=vikas@gmail.com&name=vikas
+
+https://www.freepik.com/free-vector/skyscrapers-website-template_834760.htm
+
+  jdbc:h2:mem:testdb
+RESTFUL AND JPA
+
+@GetMapping(path="/hello-world-bean/{name}") to get request with param
+@pathvariable to access the param passed in uri.
+created rest api for users retrival, user retrival using particular id(path variable is used)
+
+
+4/1/2020
+@@PostMapping("/Users")
+	public void create(@RequestBody Users user)
+	{
+		userdao.save(user);
+	}
+
+we used postman or command line,for post request.
+
+in order to get the response as "Created" along with URI,
+Following code need to be added
+
+@PostMapping("/Users")
+	public ResponseEntity<Object> create(@RequestBody Users user)
+	{
+	Users saveduser=	userdao.save(user);
+		
+		//URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(saveduser.getId()).toUri();
+		
+		//return ResponseEntity.created(location).build();
+	}
+
+
+in order to create custom exception handler to handle all the exception 
+
+@ControllerAdvice
+@RestController
+public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler
+{
+
+	@ExceptionHandler(Exception.class)
+	public final ResponseEntity<Object> handleAllException(Exception ex, WebRequest request) throws Exception
+	{
+		
+		ExceptionResponse exceptionResponse= new ExceptionResponse(ex.getMessage(), new Date(), request.getDescription(false));
+		return new ResponseEntity(exceptionResponse,HttpStatus.INTERNAL_SERVER_ERROR);
+	}	
+	
+}
+Controller adivice because it is share across all the controller.
+ExceptionResponse is bean exception class for custom message, (it created already and here we make and object and when any exception occur, exceptionhandler
+annotation catchs the exception and response appropraiately
+
+
+FOR DELETE 
+@DeleteMapping("/Users/{id}")
+	public void deleteUser(@PathVariable int id)
+	{
+		
+		Users user= userdao.DeleteById(id);
+		if(user==null)
+		{
+			throw new UserNotFoundException("id -"+id);
+		}
+		 
+		
+	}
+	
+AND IN DAO
+	public Users DeleteById(int id)
+	{
+		Iterator<Users> iterator=user.iterator();
+		while(iterator.hasNext())
+		{
+			Users user=iterator.next();
+			if(user.getId()==id)
+			{
+				iterator.remove();
+				return user;
+			}
+		}
+		
+		return null;
+		
+
+5/1/2020
+
+HATEOAS--- (Hypermedia as the engine of application state)USed to get the full details along with user,
+eg- suppose you consumer asked for details of one user ,we can add a link, next to the response with give all user too, this can be achieve by hateoas
+
+please see below code and you need to add hateoas dependecy in pom.xml.
+
+@GetMapping(path = "/Users/{id}")
+	public Users getuser(@PathVariable int id) {
+
+		Users user = userdao.Findme(id);
+	
+		if (user == null) {
+			throw new UserNotFoundException("id -" + id);
+		}
+
+		
+		/*
+		 * Resource<Users> resource = new Resource<Users>(user);
+		 * 
+		 * ControllerLinkBuilder linkTo = linkTo(methodOn(this.getClass()).Findall());
+		 * 
+		 * resource.add(linkTo.withRel("all-users"))
+		 */;
+		  
+		  
+		  
+		 
+		return user;
+
+	}
+
+CONTENT NEGOTIATION-----
+to convert in xml format need to add dependy jackson-xml in pom to xml and in postman accept under header as application/xml
+
+SWAGGER-----Documntation purpose in soap its wsdl here we used swagger
+need to add in pom.xml and need to create a configuration class/enable swagger and need to define bean(called docket) here too.
+It is not working for my app please go through video and understand there
+
+
+*Defination define different object used.
+*Path define resource ,operation, details of operation 
+
+
+Actuator-----
+Monitoring your api and application, up or not metrices.
+management.endpoints.web.exposure.include=*
+
+
+Filtering---if we want to have api with certain field not exposed(like passport)
+@RestController
+public class FilteringController {
+
+	// field1,field2
+	@GetMapping("/filtering")
+	public MappingJacksonValue retrieveSomeBean() {
+		SomeBean someBean = new SomeBean("value1", "value2", "value3");
+
+		SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("field1", "field2");
+
+		FilterProvider filters = new SimpleFilterProvider().addFilter("SomeBeanFilter", filter);
+
+		MappingJacksonValue mapping = new MappingJacksonValue(someBean);
+
+		mapping.setFilters(filters);
+
+		return mapping;
+	}
+
+	// field2, field3
+	@GetMapping("/filtering-list")
+	public MappingJacksonValue retrieveListOfSomeBeans() {
+		List<SomeBean> list = Arrays.asList(new SomeBean("value1", "value2", "value3"),
+				new SomeBean("value12", "value22", "value32"));
+
+		SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("field2", "field3");
+
+		FilterProvider filters = new SimpleFilterProvider().addFilter("SomeBeanFilter", filter);
+
+		MappingJacksonValue mapping = new MappingJacksonValue(list);
+
+		mapping.setFilters(filters);
+
+		return mapping;
+	}
+
+
+Spring Security---used something called filter(servlet technologies)
+filter -- add crosscutting program, add authencation mandatory, add login form,handle login error
+
+
+---------------
+
+MICROSERVICES
+
+
+
+
+
+

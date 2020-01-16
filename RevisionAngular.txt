@@ -1,0 +1,375 @@
+a> npm install -g @angular/cli----to install angular cli  (creating an Angular project)// npm update
+b> ng new CountrySearch---- create  a project.
+c> ng serve---Builds and serves your app
+d> npm install --save bootstrap@3 and all to angular.json/project/style and  add relative path under style for min.css
+e>ng generate component navabar --spec.ts
+
+WORKING OF ANGULAR-----
+PACKAGE.JSON FILE CONTAINS ALL THE DEPENDENCIES.
+E2E IS END TO END TESTING
+tsconfig.json----how the TypeScript should be compiled to JavaScript.
+karma.conf.js ----- configuration file for the Jasmine unit testing framework and the Karma test runner.
+TS----SUPERSET TO JS., IS CONVERTED TO JS BY CLI TO RUN IN BROWSER.
+
+angular get started,main.ts get started where we bootstrap an angular application module(app module), the it see app component and analyse everything
+and now angular is able to handle <app-root> tag define in index.html
+
+DATABINDING---------------------------------------------------------------------------------------------------------------------------------------
+
+STRING INTERPOLATION----FROM TS. TO HTML. {{-----}} ,ANYTHING insidre the curly braces must be a string, we can call a function that return string,cant 
+write block statement if or for not allowed but tertinary operator are.
+
+allowserver=false;
+settimout(this.allowserver=true,2000)
+PROPERTY BINDING-----<btn [disabled]="!allowserver">Add server
+
+if you want to print something use string interpolation and if u want to change property of html element use property binding
+
+EVENT BINDING===<BTN(CLICK)="DFUNCTION CALLING()">;--BTN,  <INPUT (INPUT)="FINCTION CALL($EVENT)">{IN BROWER  TERMINAL---TARGET ---VALUE}
+
+TWO WAY BINDING---- PROPERTY + EVENT BINDING--- USED IN INPUT TAG,
+
+
+
+
+DIRECTIVE---
+instruction in DOM like (component)
+
+		1.*ngif---- * because its a structural directive , it changes the dom   *ngif="true/false"  any thing which return true false.
+		*ng if else--- *ngif="servercreasted; else noserver"  <ng-template #noserver>no server created
+		
+		
+	   2.ngStyle----[ngstyle]={key(bg color),value}attribute directive add style dynmacially.
+	     ngclass--[ngclass]={classname,serverstatus='online'}dynamically add or removecss class... they both use  in property binding
+	
+	
+	   3.ngFor----
+	   
+	   
+	   
+	   local refrence gives us the whole element. it is passed through method 
+	   @viewChild('local refrence /component ') get access to whole dom element.   for angular 8,@viewChild('',{static:true}),as we used the slelected eleemetnt in ngoninit()
+	   
+	   it is same as local refrence but is of typle element ref.
+	   
+	   
+	   <ngcontent>
+	   @contentchild()
+	   
+	   
+	  ---------------------------------------------------------------------------------------------------------------
+Custom Directive 
+Renderer, to dom element.
+
+renderer.setStyle()
+
+
+
+
+--------------------------------------------------------------------------
+LIFE CYCLE HOOKS, WHEN THE ANGULR Instanciate components, its goes through several hooks
+
+NGONCHANGES----called  after a bound input property changes.
+				executed multiple times, right at the start when component is created , and when there is any changes.bound input means property decorated with @Input
+
+NGONINIT------it is executed after the constructor,once component are initialised.PROPERTY can now be access.
+
+NGDOCHECK-----runs multiple times,for every change detection.
+
+NGAFTERCONTENTINIT---Called after content <ng-content> has been initialised.
+
+NGAFTERCONTENTCHECKED---CALLED when change detection check this content projecting into our component.
+
+NGAFTERVIEWINTI---called after component view(and child view) are initialised
+NGAFTERVIEWCHECKED---Called everytime view have been checked.
+
+NGONDESTROY---ONCE COMPONENT GET DESTROY.
+
+
+------------------------------------------------------------------------------------
+ CODE USED>>>>>>>
+ 
+ 
+ this.http.get(this.url,{search:search}).subscribe(res => console.log(res.json()));
+ 
+ getCountryDetails()
+  {
+    console.log("GET");
+    let url = `${this.apiRoot}/name/${name}`;
+    this.http.get(url).subscribe((res:string) =>{console.log(res),this.countryName=res;});
+  }this.http.get(this.url).subscribe(res => console.log(res.json()));
+}
+ 
+ 
+ 
+ 
+ ----------------------------------------------------------------------------------------------------------------------------------------------------------
+ ROUTING-----
+ 
+ RouterModule.forRoot()--------register our root.
+ routerLinkactive="activate"-- to let us know which link is active.
+ routerLinkactiveoption={exact:true} whenhome is active all time.
+ 
+ ACCESS ROUTER PARAMS---
+ this.Activaatedroute.snapshot.param to acees route param---used when component is loaded first time
+ this.sctivatedrouted.param.subscribe ---when component is already loaded and we r present in same.
+ 
+ ACCESS ROUTER QUERY PARAMS------
+ [QUERYPARAMS]={ALLOWeDIT:'1'}--ADDING in router link... 
+ other way progamitically ---this.router.navigate(['/servers',id,'edit',{queryaparams:{allowedit:1},fragmetnt:loading])
+ 
+ to retrive--same as route params, just in place of params , queryparams.
+ 
+ 
+ NESTED ROUTING----(CHILD ROUTES)
+ {PATH='/SERVER' COMPONENT=CNAME,CHILDREN:[{'PATH:':ID' ,COMPONENT=CNAME]} AND for childroute we need to specify were we need it to display
+ which is not in app.component.html
+ 
+ this.router.navigate(['edit'],{relativeTo:tjhis.route.,queryaparamsHandling:'preserve'}),preserve-old data is kept,merge for overide
+ 
+ 
+ WILDCARD ROUTES----REDIRECTtO'/NOT FOUND'
+ 
+ 
+ ROUTE GUARDS-------------------------------------------------------------------------------------------------------------------------------------------
+ ..
+ 
+ class authGuard implements canActivate
+ {
+ canActivate(route;ActivatedRouteSnapshot,statr:routeStateSnapshot):observable<booleaan>|promise<boolean>|boolean
+ {
+ }
+ }
+ 
+ 
+ 
+ passing statci data to route------{'PATH:'' ,COMPONENT=CNAME,data:{,}]}
+ 
+ 
+ 
+ 
+ 
+ An Angular application is a tree of components.
+ Some of these components are reusable UI components (e.g., list, table), and some are application components, 
+ which represent screens or some logical parts of the application.
+ The router cares about application components, or, to be more specific, about their arrangements.
+ Let’s call such component arrangements router states. 
+ In other words, a router state is an arrangement of application components that defines what is visible on the screen.
+ 
+  RouterStateSnapshot----routeStateSnapshot is an immutable data structure representing the state of the router at a particular moment in time.
+  RouterState----- is similar to RouteStateSnapshot, except that it represents the state of the router changing over time.
+  
+  
+  WHEN WE ARE NAVIGATING TO =  “/inbox/33/messages/44”
+  RouterStateSnapshot-ROOT:
+					  COMPONENT:MAILaPPcOMP
+					   URL:
+					   PARAMS{}:
+					   DATA:{}
+ ----------------------------------------------------------------------------------------------------------------------------------------
+ observer are part interested about new data, error or completion
+ next,error,completion
+ const CustomeObservable=Observable.create(observer=>{setInterval(handle:()={observer.next(count);count++};timeout:1000)});
+ CustomeObservable.subscribe(data=>c.log(data),error=>alert(""),()=>{console.log(complete)})});;
+ 
+ observer.error(new Error('message'));
+ onserver.complete();
+ 
+ obnserble operator map,filter.
+ 
+ SUBJECT-- same as event emitter.,in place of emit use next, through serveces component communication
+ 
+ 
+ 
+ OBSERVABLE; (hooks staus change and value change)
+getBooksFromStore(): Observable<Book[]> {
+   return this.http.get<Book[]>(this.bookUrl);
+} 
+
+getsoftBooks() {
+   this.bookService.getBooksFromStore().subscribe(books => this.softBooks = books);
+} 
+
+
+promise:
+
+var promise = new Promise(function(resolve, reject) { 
+  const x = "geeksforgeeks"; 
+  const y = "geeksforgeeks"
+  if(x === y) { 
+    resolve(); 
+  } else { 
+    reject(); 
+  } 
+}); 
+  
+promise. 
+    then(function () { 
+        console.log('Success, You are a GEEK'); 
+    }). 
+    catch(function () { 
+        console.log('Some error has occured'); 
+    })
+	
+	then() is invoke when promise is resolve or rejeced
+	
+Authentication
+
+
+URL tree,Authguar,
+
+pleaser learn about observable,operator,subject.m[ap,pipe
+
+
+SUBJECT--
+A.IT IS A OBSERVABLE, WHICH CAN BE USED IF WE WANT TO CHANGE DATA ACROSS ALL COMPONENT,FOR THAT WE NEED TO SUBSCRIBE IT.N
+B.EXPL- IN A PAGE IS WE HAVE FOR COMPONENT DSIPALY USERNAME O, THEN WE CAN UPDATE ALL BY USING SUBJECT.
+C.USING NEXT METHOD.
+D.WE CAN FORCE IT UNLIKE OBSERVABLE TO EMIT NEW VALUE.
+E.NO INTIAL VALUE.
+
+BEHAVIOURAL SUBJECT----TO HAVE AN INTIAL VALUE SET .IT HOLDS ONE VALUE.
+
+
+CALLBACK-METHOD CALL AFTER EXECUTION OF PREVIOUS METHOD.
+OBSERVABLE OPERATOR--IF WE WANT TO CHANGE THE OBSERVABLE DATA WE RECIEVE, THEY ARE, MAP,,SUBSCRIBE,CATCH,THROW,RETRYETC.
+MAP- CAN BE USED TO TRANSFORM THE VALUE THAT WE GOT INTO ANOTHER VALUE.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+ANGULAR FORM------------
+
+Angular give js representation of form.
+
+two approach-- template driven and reactive.
+TEMPLATE DRIVEN--ANGULAR UNDERSTAND THE FORM OBJECT FROM DOM.
+REACTIVE --FORM CREATED THROUGH PROGRAM(IN ts file) AND SYNC WITH DOM.
+
+1>TEMPLATE driven---
+ANGULAR DONT AUTOMATICALLY DETECT input.we need to define it. 
+Form contrl- It is a class that is used to get and set values and validation of a form control such as <input> and <select> tag.
+dirty--somwthing change in form(true else false)
+
+add ngModel at input tag, like <input type="" ngModel  name="username" #username=ngForm>,#username=ngForm--validation
+<span *ngIf='username.valid && username.touched">please enter valid data</span>
+ <form {ngSubmit}="onSubmit()" #f="ngForm">
+ <button type="sumbmit">
+onSubmit(form:HTMLFormElement){consolr.log(form)}
+#f="ngForm"====to get access to ngform.
+onSubmit(form:ngForm){consolr.log(form)}
+
+VALIDATION---required,email. 
+ngNativevalidation--to enable html validation.
+
+ngFormGroup---to group your userdata to seperate js object.
+
+to have somethinglike suggest uSER-- we can make use of viewchild to get access of ngForm
+and we can set value , for that,
+
+SETTING THE VALUE
+setsomthing(){
+this.signupform.setvalue({userdata:{username:"dede",email:"eeewewew"}})
+
+the proble with it ll set all the value , but if we want to set particular value
+
+we can USe PATCH() TO UPDATE PART(SET) OF FORM
+this.signupform.form.patchvalue({userdata:{username:"dede""}})
+}
+
+
+2>REACTIVE Form=
+
+this.signupform.setvalue({userdata:{username:"dede",email:"eeewewew"}})=FormGroup;
+fromGrouup---to work with form progamitically.
+formcontrol, give contol to input or select tag,It is a class that is used to get
+and set values and validation of a form control such as <input> and <select> tag
+ngOnInit()
+{
+this.signupform=new FormGroup(
+{
+'username':new formcontrol('default value'),
+mail':new formcontrol('default value'),
+gender':new formcontrol('male');
+}
+);
+
+to sync with our form, we need to inform angular to take my form group,that can be done as below;
+<form [formgroup]="signupform">
+and need to tell the same for the formcontrl.
+<input formcontrlname="username">
+}
+
+tosubmit;---
+<form [formgroup]="signupform" {ngSubmit}="onsubmit()">
+we dont need and refrence as we have declared formgroup in ts file itself.
+
+
+validation---- we can pass multiple value into formcontrl for validtion
+username':new formcontrol('default value',validators.required),
+mail':new formcontrol('default value,[validators.required,validators.email]'),
+
+
+ACCESS CONTROL------
+ 
+<span *ngIf="signupform.get('username').valid">please enter valid data</span>
+
+formGroup;
+
+formarray:
+gender':new formarray([]);
+
+onaaddhobby(){
+control=new formcontrl('','')
+<formarray>this.signupform.get('hobbies').push(control)
+
+<div formarrayname="hobbies">
+please check video.
+
+
+}
+
+
+FORMGROUP===GROUP OF CONTROL------
+Create form group,create form control under onInit().,sync with html.
+indexOf works the same way as contain, like array.contain.
+
+
+-----------------------------------------------------------------------------------------------------
+PIPES- TRANSFORM OP
+
+@pipe({name:'sherten'})
+export class shoterpipe implements pipetransform
+{
+transform(value:any,limit:number)
+{
+PURE/IMPURE pipe
+
+
+pure--aAngular detects a change in the value or the parameters passed to a pipe.
+impure  is called for every change detection cycle no matter whether the value or parameter(s) changes
+
+for async---pipe|async
+
+---------------------------------------------------------------------------------------------------------
+Authentication
+
+
+URL tree,Authguar,
+
+pleaser learn about observable,operator,subject.m[ap,pipe
+
+
+SUBJECT--
+A.IT IS A OBSERVABLE, WHICH CAN BE USED IF WE WANT TO CHANGE DATA ACROSS ALL COMPONENT,FOR THAT WE NEED TO SUBSCRIBE IT.N
+B.EXPL- IN A PAGE IS WE HAVE FOR COMPONENT DSIPALY USERNAME O, THEN WE CAN UPDATE ALL BY USING SUBJECT.
+C.USING NEXT METHOD.
+D.WE CAN FORCE IT UNLIKE OBSERVABLE TO EMIT NEW VALUE.
+E.NO INTIAL VALUE.
+
+BEHAVIOURAL SUBJECT----TO HAVE AN INTIAL VALUE SET .IT HOLDS ONE VALUE.
+
+
+CALLBACK-METHOD CALL AFTER EXECUTION OF PREVIOUS METHOD.
+OBSERVABLE OPERATOR--IF WE WANT TO CHANGE THE OBSERVABLE DATA WE RECIEVE, THEY ARE, MAP,,SUBSCRIBE,CATCH,THROW,RETRYETC.
+MAP- CAN BE USED TO TRANSFORM THE VALUE THAT WE GOT INTO ANOTHER VALUE.
